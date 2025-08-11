@@ -1,0 +1,33 @@
+{
+    "arrowParens": "avoid",
+    "trailingComma": "all",
+    "useTabs": false,
+    "indent_style": "space",
+    "semi": true,
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "tabWidth": 4,
+    "printWidth": 120,
+    "insert_final_newline": true,
+    "trim_trailing_whitespace": true,
+    "vueIndentScriptAndStyle": false,
+    "insertPragma": false,
+    "proseWrap": "preserve",
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": ["*.md"],
+            "options": {
+                "tabWidth": 2,
+                "parser": "markdown"
+            }
+        },
+        {
+            "files": ["*.vue"],
+            "options": {
+                "htmlWhitespaceSensitivity": "ignore"
+            }
+        }
+    ]
+}

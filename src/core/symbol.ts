@@ -11,5 +11,6 @@ export const configPropsKey = Symbol() as InjectionKey<{
   theme: "dark" | "light";
   extraLangs: Langs[];
   codeBlockRenderer: Component | undefined;
+  thinkBlockRenderer: Component | undefined;
   componentsMap: Record<string, Component>;
 }>;
