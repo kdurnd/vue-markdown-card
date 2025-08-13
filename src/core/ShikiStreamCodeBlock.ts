@@ -32,7 +32,7 @@ export const ShikiStreamCodeBlock = defineComponent({
             const codeNode = node.children[0];
             if (codeNode && codeNode.type === 'element' && codeNode.tagName === 'code') {
                 const codeTextNode = codeNode.children[0];
-                if (codeTextNode.type === 'text') {
+                if (codeTextNode?.type === 'text') {
                     const className = codeNode.properties.className as string[];
                     if (className) {
                         const languageClass = className.find(i => i.includes('language')) as string;

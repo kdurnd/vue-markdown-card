@@ -13,9 +13,7 @@ export const ShikiProvider = defineComponent({
 
         onMounted(async () => {
             const _highlighter = await initShikiHighlighter();
-            for (const lang of proxyProps.extraLangs) {
-                await _highlighter.loadLanguage(lang);
-            }
+            await Promise.all(proxyProps.extraLangs.map((lang: any) => _highlighter.loadLanguage(lang)));
             highlighter.value = _highlighter;
         });
 

@@ -1,24 +1,12 @@
-# hhhh
-
 <think>
 
-<p> 123123
-asdasd123123
+你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好
 
-- 123
-- 456
-
-$ mc^2 $
-
-asdasd123123
-asdasd123123
-asdasd123123
-asdasd123123
-asdasd123123
-asdasd123123
+哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈 $ mc^2 $ 哈哈哈哈哈哈哈哈
 
 </think>
 
-## asdasdasdsad
 
-sdfssdfssssssfsdfsdfsdfsfsdfsdfsdf
+## hhh222
+
+$ cn^2 $

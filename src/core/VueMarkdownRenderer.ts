@@ -4,8 +4,9 @@ import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { VFile } from 'vfile';
-import { unified, type Plugin } from 'unified';
+import { unified, type PluggableList } from 'unified';
 import { segmentTextComponents } from './segmentText';
 import { ShikiProvider } from './ShikiProvider';
 import { Langs } from './highlight/shiki';
@@ -13,10 +14,8 @@ import { remarkComponentCodeBlock, ComponentCodeBlock } from './plugin/remarkCom
 import { rehypePassGeneratedProp } from './plugin/rehypePassGeneratedProp';
 import { ShikiStreamCodeBlock } from './ShikiStreamCodeBlock';
 import { provideProxyProps } from './useProxyProps';
-import remarkMath from 'remark-math';
-import rehypekMath from 'rehype-math';
-import rehypeRaw from 'rehype-raw';
-import { ThinkBlock } from './ThinkBlock';
+import SelectPopoverProvider from '../components/SelectPopoverProvider.vue';
+import ThinkBlock from '../components/ThinkBlock.vue';
 interface RemarkRehypeOptions {
     allowDangerousHtml?: boolean;
     [key: string]: any;
@@ -59,19 +58,16 @@ export default defineComponent({
         codeBlockRenderer: {
             type: Object as PropType<Component>,
         },
-        thinkBlockRenderer: {
-            type: Object as PropType<Component>,
-        },
         extraLangs: {
             type: Array as PropType<Langs[]>,
             default: () => [],
         },
         rehypePlugins: {
-            type: Array as PropType<Plugin[]>,
+            type: Array as PropType<PluggableList>,
             default: () => [],
         },
         remarkPlugins: {
-            type: Array as PropType<Plugin[]>,
+            type: Array as PropType<PluggableList>,
             default: () => [],
         },
         remarkRehypeOptions: {
@@ -82,8 +78,37 @@ export default defineComponent({
     errorCaptured(e) {
         console.error('VueMarkdownRenderer captured error', e);
     },
-    setup(props) {
+    setup(props, { slots }) {
         provideProxyProps(props);
+
+        // 在setup内部定义jsx函数以访问slots
+        function jsx(type: any, props: Record<any, any>, key: any) {
+            const { children } = props;
+            delete props.children;
+            if (arguments.length > 2) {
+                props.key = key;
+            }
+            if (type === Fragment) {
+                return h(type, props, children);
+            } else if (typeof type !== 'string') {
+                if (type === ShikiStreamCodeBlock) {
+                    // 使用json字符串作为prop的目的是防止ShikiStreamCodeBlock组件不必要的re-render
+                    const nodeJSON = JSON.stringify(props.node);
+                    delete props.node;
+                    return h(type, { ...props, nodeJSON });
+                }
+                if (type === ThinkBlock) {
+                    // 为ThinkBlock组件添加插槽支持
+                    return h(type, props, {
+                        'think-block': (slotProps: any) => slots['think-block']?.(slotProps),
+                        'think-header': (slotProps: any) => slots['think-header']?.(slotProps),
+                        'think-content': (slotProps: any) => slots['think-content']?.(slotProps),
+                    });
+                }
+                return h(type, props);
+            }
+            return h(type, props, children);
+        }
 
         const computedProcessor = computed(() => {
             const { rehypePlugins, remarkPlugins, remarkRehypeOptions } = props;
@@ -91,12 +116,10 @@ export default defineComponent({
                 .use(remarkParse)
                 .use(remarkGfm)
                 .use(remarkComponentCodeBlock)
-                .use(remarkMath)
                 .use(remarkPlugins)
                 .use(remarkRehype, remarkRehypeOptions)
                 .use(rehypeRaw)
                 .use(rehypePassGeneratedProp)
-                .use(rehypekMath, { katexOptions: { throwOnError: false } })
                 .use(rehypePlugins);
             return processor;
         });
@@ -113,7 +136,7 @@ export default defineComponent({
                     ...segmentTextComponents,
                     ComponentCodeBlock,
                     pre: ShikiStreamCodeBlock,
-                    think:ThinkBlock,
+                    think: ThinkBlock,
                     ...props.componentsMap,
                 },
                 Fragment,
@@ -122,7 +145,6 @@ export default defineComponent({
                 passKeys: true,
                 passNode: true,
             });
-            // console.log("Generated Vue VNode:", vueVnode);
             return vueVnode;
         };
 
@@ -133,9 +155,13 @@ export default defineComponent({
         });
 
         return () => {
-            return h(ShikiProvider, null, {
-                default: () => computedVNode.value,
-            });
+            return h(
+                ShikiProvider,
+                null,
+                h(SelectPopoverProvider, null, {
+                    default: h('div', { class: 'vue-markdown-renderer' }, computedVNode.value),
+                }),
+            );
         };
     },
 });
