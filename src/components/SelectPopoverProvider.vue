@@ -12,7 +12,7 @@
         v-if="selectPopoverVisible && !disabled"
         ref="selectPopover"
     >
-        <slot name="reference" :range="currentRange">弹出层</slot>
+        <slot name="reference" :range="currentRange">{{ '123123123123' }}</slot>
     </div>
 </template>
 
@@ -24,9 +24,13 @@ import { debounce } from 'lodash-es';
 const props = withDefaults(
     defineProps<{
         disabled?: boolean;
+        blacklist?: string[]; // 新增黑名单参数，接受CSS选择器数组
+        minCount?: number; // 新增最小选中字符数参数
     }>(),
     {
         disabled: false,
+        blacklist: () => [], // 默认为空数组
+        minCount: 3,
     },
 );
 
@@ -50,6 +54,34 @@ const { x, y, strategy, update } = useFloating(virtualEl, selectPopover, {
     whileElementsMounted: autoUpdate,
 });
 
+// 检查选中的内容是否在黑名单元素中
+const isInBlacklist = (selection: Selection): boolean => {
+    if (!props.blacklist.length) return false;
+    
+    const range = selection.getRangeAt(0);
+    const commonAncestor = range.commonAncestorContainer;
+    
+    // 获取包含选中内容的元素
+    const containerElement = commonAncestor.nodeType === Node.TEXT_NODE 
+        ? commonAncestor.parentElement 
+        : commonAncestor as Element;
+    
+    if (!containerElement) return false;
+    
+    // 检查容器元素或其祖先元素是否匹配黑名单中的选择器
+    for (const selector of props.blacklist) {
+        try {
+            if (containerElement.closest(selector)) {
+                return true;
+            }
+        } catch (error) {
+            console.warn(`Invalid selector in blacklist: ${selector}`, error);
+        }
+    }
+    
+    return false;
+};
+
 const handleSelectionChange = () => {
     const selection = window.getSelection();
 
@@ -65,7 +97,14 @@ const handleSelectionChange = () => {
         return;
     }
 
-    // 有选中内容 -> 用 debounce 更新位置
+    // 检查是否在黑名单中 -> 立即关闭
+    if (isInBlacklist(selection)) {
+        selectPopoverVisible.value = false;
+        currentRange.value = null;
+        return;
+    }
+
+    // 有选中内容且不在黑名单中 -> 用 debounce 更新位置
     debouncedUpdateSelection();
 };
 
@@ -74,6 +113,11 @@ const debouncedUpdateSelection = debounce(() => {
     if (!selection) return;
 
     const range = selection.getRangeAt(0);
+    if (range.toString().length < props.minCount) {
+        selectPopoverVisible.value = false;
+        currentRange.value = null;
+        return;
+    }
     currentRange.value = range;
     selectPopoverVisible.value = true;
 

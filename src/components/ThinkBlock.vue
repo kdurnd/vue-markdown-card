@@ -127,8 +127,32 @@ const collapseTransition = {
 </script>
 
 <style scoped>
-.header-content {
+.think-block {
+    margin: var(--vmc-spacing-md) 0;
+}
 
+.think-header {
+    cursor: pointer;
+    font-size: var(--vmc-font-size-sm);
+    margin-bottom: var(--vmc-spacing-sm);
+}
+
+.header-content {
+    width: fit-content;
+    border-radius: var(--vmc-border-radius);
+    padding: var(--vmc-spacing-sm) var(--vmc-spacing-md);
+    background-color: var(--vmc-think-header-bg);
+    color: var(--vmc-think-text);
+    transition: background-color 0.2s ease;
+}
+
+.think-header:hover .header-content {
+    background-color: var(--vmc-think-header-hover-bg);
+}
+
+.think-content-wrapper {
+    font-size: var(--vmc-font-size-sm);
+    color: var(--vmc-think-text);
 }
 
 .think-content {
@@ -138,16 +162,8 @@ const collapseTransition = {
         padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
-}
-
-.think-header {
-    cursor: pointer;
-    user-select: none;
-    font-size: 0.875rem;
-}
-
-.think-content-wrapper {
-    position: relative;
-    overflow: hidden;
+    border-left: 3px solid var(--vmc-think-content-border);
+    padding-left: var(--vmc-spacing-md);
+    margin-top: var(--vmc-spacing-sm);
 }
 </style>

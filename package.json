@@ -58,6 +58,7 @@
     "shiki-stream": "^0.1.2",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
-    "vfile": "^6.0.3"
+    "vfile": "^6.0.3",
+    "viewerjs": "^1.11.7"
   }
 }

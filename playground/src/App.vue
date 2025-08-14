@@ -19,7 +19,7 @@
             </a>
             <Button @click="changeTheme">change theme to {{ switchTheme }}</Button>
         </div>
-        <article class="vue-markdown-wrapper prose prose-slate dark:prose-invert mx-auto my-10">
+        <div class="vue-markdown-wrapper mx-auto my-10 max-w-4xl">
             <VueMarkdownCard
                 :source="mdText"
                 :theme="switchTheme === 'dark' ? 'light' : 'dark'"
@@ -40,7 +40,7 @@
                         <span v-else>💡 Thoughts Completed</span>
                     </div>
                 </template> -->
-                <template #think-content="slotProps">
+                <!-- <template #think-content="slotProps">
                     <div style="background: #f0f0f0; padding: 10px; border-radius: 5px; border: 2px solid blue">
                         <p>自定义思考内容区域</p>
                         <div style="margin: 10px 0; padding: 8px; background: #e0e0e0; border-radius: 4px">
@@ -58,9 +58,9 @@
                             <component :is="slotProps?.thinkContentVNode" />
                         </div>
                     </div>
-                </template>
+                </template> -->
             </VueMarkdownCard>
-        </article>
+        </div>
     </div>
 </template>
 

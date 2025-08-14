@@ -1,4 +1,4 @@
-import { h, defineComponent, type PropType, computed, type Component } from 'vue';
+import { h, defineComponent, type PropType, computed, type Component, ref, nextTick } from 'vue';
 import { Fragment } from 'vue/jsx-runtime';
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
 import remarkParse from 'remark-parse';
@@ -78,8 +78,21 @@ export default defineComponent({
     errorCaptured(e) {
         console.error('VueMarkdownRenderer captured error', e);
     },
-    setup(props, { slots }) {
+    emits: ['images-count-updated'],
+    setup(props, { slots, emit }) {
         provideProxyProps(props);
+
+        // 图片数量监控
+        const currentImageCount = ref(0);
+        let imageCount = 0;
+
+        // 重置并发送图片数量更新事件
+        const updateImageCount = () => {
+            if (imageCount !== currentImageCount.value) {
+                currentImageCount.value = imageCount;
+                emit('images-count-updated', imageCount);
+            }
+        };
 
         // 在setup内部定义jsx函数以访问slots
         function jsx(type: any, props: Record<any, any>, key: any) {
@@ -88,6 +101,12 @@ export default defineComponent({
             if (arguments.length > 2) {
                 props.key = key;
             }
+
+            // 统计img元素
+            if (type === 'img') {
+                imageCount++;
+            }
+
             if (type === Fragment) {
                 return h(type, props, children);
             } else if (typeof type !== 'string') {
@@ -149,18 +168,40 @@ export default defineComponent({
         };
 
         const computedVNode = computed(() => {
+            // 每次重新计算时重置图片计数
+            imageCount = 0;
+
             const processor = computedProcessor.value;
             const file = createFile(props.source);
-            return generateVueNode(processor.runSync(processor.parse(file), file));
+            const result = generateVueNode(processor.runSync(processor.parse(file), file));
+
+            // 在下一个tick中发送图片数量更新事件
+            nextTick(() => {
+                updateImageCount();
+            });
+
+            return result;
         });
 
         return () => {
             return h(
                 ShikiProvider,
                 null,
-                h(SelectPopoverProvider, null, {
-                    default: h('div', { class: 'vue-markdown-renderer' }, computedVNode.value),
-                }),
+                h(
+                    SelectPopoverProvider,
+                    {
+                        blacklist: ['.think-block'],
+                    },
+                    {
+                        default: h(
+                            'div',
+                            {
+                                class: 'vue-markdown-renderer',
+                            },
+                            computedVNode.value,
+                        ),
+                    },
+                ),
             );
         };
     },
