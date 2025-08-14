@@ -60,12 +60,7 @@ function extractRawContent(node: any): string {
     return '';
 }
 
-const slotProps = computed(() => ({
-    isThinking: props.generated,
-    thinkContentVNode: thinkContentVNode.value, // 保留VNode用于渲染
-    rawContent: extractRawContent(props.node), // 新增：原始文本内容
-    originalNode: props.node, // 新增：原始节点数据（不包含VNode）
-}));
+
 
 const showContent = ref(true);
 function toggleContent() {
@@ -124,6 +119,14 @@ const collapseTransition = {
         htmlEl.style.paddingBottom = htmlEl.dataset.oldPaddingBottom || '';
     },
 };
+
+const slotProps = computed(() => ({
+    isThinking: props.generated,
+    thinkContentVNode: thinkContentVNode.value, // 保留VNode用于渲染
+    rawContent: extractRawContent(props.node), // 新增：原始文本内容
+    originalNode: props.node, // 新增：原始节点数据（不包含VNode）
+    isShowContent: showContent.value, // 新增：是否显示内容
+}));
 </script>
 
 <style scoped>
@@ -135,10 +138,7 @@ const collapseTransition = {
     cursor: pointer;
     font-size: var(--vmc-font-size-sm);
     margin-bottom: var(--vmc-spacing-sm);
-}
-
-.header-content {
-    width: fit-content;
+     width: fit-content;
     border-radius: var(--vmc-border-radius);
     padding: var(--vmc-spacing-sm) var(--vmc-spacing-md);
     background-color: var(--vmc-think-header-bg);
