@@ -117,7 +117,14 @@ export default defineComponent({
                     delete props.node;
                     return h(
                         type,
-                        { ...props, nodeJSON },
+                        { 
+                            ...props, 
+                            nodeJSON,
+                            onMermaidRendered: (count: number) => {
+                                currentImageCount.value += count;
+                                emit('images-count-updated', currentImageCount.value);
+                            }
+                        },
                         {
                             'code-header': (slotProps: any) => slots['code-header']?.(slotProps),
                             'code-content': (slotProps: any) => slots['code-content']?.(slotProps),

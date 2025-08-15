@@ -148,7 +148,7 @@ onMounted(() => {
             },
             filter(img) {
                 return img.getAttribute('preview');
-            }
+            },
         });
     }
 
@@ -180,23 +180,23 @@ onBeforeUnmount(() => {
 /* CSS 变量定义 - 默认亮色模式 */
 .vue-markdown-card {
     /* 颜色变量 */
-    --vmc-text-primary: rgb(51 65 85); /* slate-700 */
-    --vmc-text-secondary: rgb(15 23 42); /* slate-900 */
-    --vmc-text-muted: rgb(100 116 139); /* slate-500 */
-    --vmc-background: rgb(255 255 255); /* white */
-    --vmc-background-code: rgb(51 65 85); /* slate-700 */
-    --vmc-border: rgb(226 232 240); /* slate-200 */
-    --vmc-accent: rgb(15 118 110); /* teal-700 */
-
+    --vmc-text-primary: oklch(41.8% 0.014 257.335); /* slate-700 */
+    --vmc-text-secondary: oklch(16.9% 0.02 257.504); /* slate-900 */
+    --vmc-text-muted: oklch(52.3% 0.017 253.101); /* slate-500 */
+    --vmc-background: oklch(100% 0 0); /* white */
+    --vmc-background-code: oklch(41.8% 0.014 257.335); /* slate-700 */
+    --vmc-border: oklch(92.9% 0.013 255.508); /* slate-200 */
+    --vmc-accent: oklch(42.2% 0.101 180.759); /* teal-700 */
+    --vmc-code-bg: oklch(93% 0 0);
     /* ThinkBlock 专用变量 */
-    --vmc-think-header-bg: rgb(248 250 252); /* slate-50 */
-    --vmc-think-header-hover-bg: rgb(241 245 249); /* slate-100 */
-    --vmc-think-content-border: rgb(59 130 246); /* blue-500 */
-    --vmc-think-text: rgb(71 85 105); /* slate-600 */
+    --vmc-think-header-bg: oklch(98.4% 0.003 247.858); /* slate-50 */
+    --vmc-think-header-hover-bg: oklch(96.3% 0.006 256.848); /* slate-100 */
+    --vmc-think-content-border: oklch(62.9% 0.203 263.326); /* blue-500 */
+    --vmc-think-text: oklch(49.2% 0.016 257.261); /* slate-600 */
 
     /* code-header专用变量 */
-    --vmc-code-header-bg: rgb(248 250 252); /* slate-50 */
-
+    --vmc-code-header-bg: oklch(98.4% 0.003 247.858); /* slate-50 */
+    --vmc-code-mermaid-btn-bg: oklch(92.9% 0.013 255.508); /* slate-200 */
     /* 尺寸变量 */
     --vmc-spacing-xs: 0.125rem;
     --vmc-spacing-sm: 0.25rem;
@@ -231,21 +231,23 @@ onBeforeUnmount(() => {
 /* 暗色模式 - 直接修改CSS变量值 */
 .dark .vue-markdown-card,
 .vue-markdown-card:where(.dark, .dark *) {
-    --vmc-text-primary: rgb(226 232 240); /* slate-200 */
-    --vmc-text-secondary: rgb(248 250 252); /* slate-50 */
-    --vmc-background: rgb(0 0 0); /* black */
-    --vmc-background-code: rgb(15 23 42); /* slate-900 */
-    --vmc-border: rgb(71 85 105); /* slate-600 */
-    --vmc-accent: rgb(94 234 212); /* teal-300 */
+    --vmc-text-primary: oklch(90.9% 0.008 255.567); /* slate-200 */
+    --vmc-text-secondary: oklch(98.4% 0.003 247.858); /* slate-50 */
+    --vmc-background: oklch(0% 0 0); /* black */
+    --vmc-background-code: oklch(16.9% 0.02 257.504); /* slate-900 */
+    --vmc-border: oklch(49.2% 0.016 257.261); /* slate-600 */
+    --vmc-accent: oklch(87.2% 0.134 173.364); /* teal-300 */
+    --vmc-code-bg: oklch(9% 0 0);
 
     /* ThinkBlock 暗色模式变量 */
-    --vmc-think-header-bg: rgb(30 41 59); /* slate-800 */
-    --vmc-think-header-hover-bg: rgb(51 65 85); /* slate-700 */
-    --vmc-think-content-border: rgb(96 165 250); /* blue-400 */
-    --vmc-think-text: rgb(148 163 184); /* slate-400 */
+    --vmc-think-header-bg: oklch(27.9% 0.041 260.031); /* slate-800 */
+    --vmc-think-header-hover-bg: oklch(41.8% 0.014 257.335); /* slate-700 */
+    --vmc-think-content-border: oklch(70.3% 0.159 262.881); /* blue-400 */
+    --vmc-think-text: oklch(65.1% 0.012 253.765); /* slate-400 */
 
     /* code-header专用变量 */
-    --vmc-code-header-bg: rgb(30 41 59); /* slate-800 */
+    --vmc-code-header-bg: oklch(27.9% 0.041 260.031); /* slate-800 */
+    --vmc-code-mermaid-btn-bg: oklch(20.8% 0.042 265.755); /* slate-900 */
 }
 
 /* Vue Markdown Card 基础样式 */

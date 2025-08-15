@@ -29,7 +29,7 @@
             >
                 <!-- ShikiStreamCodeBlock 插槽示例 -->
                 <!-- Header 插槽：自定义代码块头部 -->
-                <template #code-header="{ slotProps }">
+                <!-- <template #code-header="{ slotProps }">
                     <div class="custom-code-header">
                         <div class="language-badge">{{ slotProps.language || 'text' }}</div>
                         <div class="code-actions">
@@ -37,7 +37,7 @@
                             <span class="lines-count">{{ slotProps.code?.split('\n').length || 0 }} 行</span>
                         </div>
                     </div>
-                </template>
+                </template> -->
 
                 <!-- Content 插槽：自定义代码内容渲染 -->
                 <!-- <template #code-content="{ highlightVnode, slotProps }">

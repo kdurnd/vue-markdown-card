@@ -1,14 +1,13 @@
 <template>
     <!-- 优先级1：整体自定义插槽 -->
-    <slot name="think-block" v-bind="slotProps">
-        <!-- 优先级2：分块插槽 -->
-        <div class="think-block">
+    <div class="think-block">
+        <slot name="think-block" v-bind="slotProps">
             <div class="think-header" @click="toggleContent">
                 <slot name="think-header" v-bind="slotProps">
                     <div class="header-content">
                         {{ slotProps.isThinking ? '🤔 思考中...' : '💡 思考完成' }}
-                        <RiArrowDownSLine v-if="!slotProps.isShowContent" size="14"/>
-                        <RiArrowUpSLine v-else size="14"/>
+                        <RiArrowDownSLine v-if="!slotProps.isShowContent" size="14" />
+                        <RiArrowUpSLine v-else size="14" />
                     </div>
                 </slot>
             </div>
@@ -21,8 +20,8 @@
                     </div>
                 </CollapseTransition>
             </div>
-        </div>
-    </slot>
+        </slot>
+    </div>
 </template>
 
 <script setup lang="ts">
