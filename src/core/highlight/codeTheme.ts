@@ -59,7 +59,6 @@ function convertToShikiTheme(syntaxObject: ShikiSyntaxObject): CSSProperties {
     "--vercel-code-block-token-number": syntaxObject.number,
     "--vercel-code-block-token-property": syntaxObject.property,
     "--vercel-code-block-highlight": syntaxObject.highlight,
-    "--vercel-code-block-highlight-border": syntaxObject.highlightBorder,
     "--vercel-code-block-highlight-hover": syntaxObject.highlightHover,
   } as CSSProperties;
 }

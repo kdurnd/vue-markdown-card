@@ -9,6 +9,7 @@
             :extra-langs="extraLangs"
             @images-count-updated="handleImagesCountUpdated"
         >
+            <!-- Think Block 插槽 -->
             <template #think-block="slotProps">
                 <slot name="think-block" v-bind="slotProps"></slot>
             </template>
@@ -17,6 +18,17 @@
             </template>
             <template #think-content="slotProps">
                 <slot name="think-content" v-bind="slotProps"></slot>
+            </template>
+
+            <!-- Code Block 插槽 -->
+            <template #code-header="slotProps">
+                <slot name="code-header" v-bind="slotProps"></slot>
+            </template>
+            <template #code-content="slotProps">
+                <slot name="code-content" v-bind="slotProps"></slot>
+            </template>
+            <template #code-block="slotProps">
+                <slot name="code-block" v-bind="slotProps"></slot>
             </template>
         </VueMarkdownRenderer>
     </article>
@@ -134,6 +146,9 @@ onMounted(() => {
                 flipHorizontal: 4,
                 flipVertical: 4,
             },
+            filter(img) {
+                return img.getAttribute('preview');
+            }
         });
     }
 
@@ -178,6 +193,9 @@ onBeforeUnmount(() => {
     --vmc-think-header-hover-bg: rgb(241 245 249); /* slate-100 */
     --vmc-think-content-border: rgb(59 130 246); /* blue-500 */
     --vmc-think-text: rgb(71 85 105); /* slate-600 */
+
+    /* code-header专用变量 */
+    --vmc-code-header-bg: rgb(248 250 252); /* slate-50 */
 
     /* 尺寸变量 */
     --vmc-spacing-xs: 0.125rem;
@@ -225,6 +243,9 @@ onBeforeUnmount(() => {
     --vmc-think-header-hover-bg: rgb(51 65 85); /* slate-700 */
     --vmc-think-content-border: rgb(96 165 250); /* blue-400 */
     --vmc-think-text: rgb(148 163 184); /* slate-400 */
+
+    /* code-header专用变量 */
+    --vmc-code-header-bg: rgb(30 41 59); /* slate-800 */
 }
 
 /* Vue Markdown Card 基础样式 */
@@ -297,7 +318,6 @@ onBeforeUnmount(() => {
     font-weight: var(--vmc-font-weight-normal);
     font-size: var(--vmc-font-size-sm);
     line-height: var(--vmc-line-height-relaxed);
-    margin-top: var(--vmc-spacing-md);
     margin-bottom: var(--vmc-spacing-md);
     border-radius: var(--vmc-border-radius);
     padding: var(--vmc-spacing-sm) var(--vmc-spacing-md);

@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.1.8",
+    "@remixicon/vue": "^4.6.0",
     "@shikijs/core": "^3.6.0",
     "@shikijs/langs": "^3.6.0",
     "@shikijs/themes": "^3.6.0",

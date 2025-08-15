@@ -12,7 +12,8 @@ import { ShikiProvider } from './ShikiProvider';
 import { Langs } from './highlight/shiki';
 import { remarkComponentCodeBlock, ComponentCodeBlock } from './plugin/remarkComponentCodeBlock';
 import { rehypePassGeneratedProp } from './plugin/rehypePassGeneratedProp';
-import { ShikiStreamCodeBlock } from './ShikiStreamCodeBlock';
+import { rehypePreviewImg } from './plugin/rehypePreviewImg';
+import ShikiStreamCodeBlock from '../components/ShikiStreamCodeBlock.vue';
 import { provideProxyProps } from './useProxyProps';
 import SelectPopoverProvider from '../components/SelectPopoverProvider.vue';
 import ThinkBlock from '../components/ThinkBlock.vue';
@@ -114,7 +115,15 @@ export default defineComponent({
                     // 使用json字符串作为prop的目的是防止ShikiStreamCodeBlock组件不必要的re-render
                     const nodeJSON = JSON.stringify(props.node);
                     delete props.node;
-                    return h(type, { ...props, nodeJSON });
+                    return h(
+                        type,
+                        { ...props, nodeJSON },
+                        {
+                            'code-header': (slotProps: any) => slots['code-header']?.(slotProps),
+                            'code-content': (slotProps: any) => slots['code-content']?.(slotProps),
+                            'code-block': (slotProps: any) => slots['code-block']?.(slotProps),
+                        },
+                    );
                 }
                 if (type === ThinkBlock) {
                     // 为ThinkBlock组件添加插槽支持
@@ -139,6 +148,7 @@ export default defineComponent({
                 .use(remarkRehype, remarkRehypeOptions)
                 .use(rehypeRaw)
                 .use(rehypePassGeneratedProp)
+                .use(rehypePreviewImg)
                 .use(rehypePlugins);
             return processor;
         });

@@ -25,6 +25,8 @@ export const defaultLangs = {
   cmake: import("@shikijs/langs/cmake"),
   sql: import("@shikijs/langs/sql"),
   matlab: import("@shikijs/langs/matlab"),
+  mermaid: import("@shikijs/langs/mermaid"),
+  markdown: import("@shikijs/langs/markdown"),
 };
 
 export async function initShikiHighlighter() {

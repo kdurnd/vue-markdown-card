@@ -7,17 +7,19 @@
                 <slot name="think-header" v-bind="slotProps">
                     <div class="header-content">
                         {{ slotProps.isThinking ? '🤔 思考中...' : '💡 思考完成' }}
+                        <RiArrowDownSLine v-if="!slotProps.isShowContent" size="14"/>
+                        <RiArrowUpSLine v-else size="14"/>
                     </div>
                 </slot>
             </div>
             <div class="think-content-wrapper">
-                <transition v-bind="collapseTransition">
+                <CollapseTransition>
                     <div v-show="showContent" class="think-content">
                         <slot name="think-content" v-bind="slotProps">
                             <component :is="slotProps.thinkContentVNode" />
                         </slot>
                     </div>
-                </transition>
+                </CollapseTransition>
             </div>
         </div>
     </slot>
@@ -26,6 +28,8 @@
 <script setup lang="ts">
 import { computed, h, PropType, ref } from 'vue';
 import { ElementNode } from '../core/segmentText';
+import CollapseTransition from './CollapseTransition.vue';
+import { RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/vue';
 
 const props = defineProps<{
     node: ElementNode;
@@ -60,65 +64,10 @@ function extractRawContent(node: any): string {
     return '';
 }
 
-
-
 const showContent = ref(true);
 function toggleContent() {
     showContent.value = !showContent.value;
 }
-
-const collapseTransition = {
-    onBeforeEnter(el: Element) {
-        const htmlEl = el as HTMLElement;
-        htmlEl.dataset.oldPaddingTop = htmlEl.style.paddingTop;
-        htmlEl.dataset.oldPaddingBottom = htmlEl.style.paddingBottom;
-        htmlEl.style.maxHeight = '0';
-        htmlEl.style.paddingTop = '0';
-        htmlEl.style.paddingBottom = '0';
-    },
-    onEnter(el: Element) {
-        const htmlEl = el as HTMLElement;
-        htmlEl.dataset.oldOverflow = htmlEl.style.overflow;
-        if (htmlEl.scrollHeight !== 0) {
-            htmlEl.style.maxHeight = htmlEl.scrollHeight + 'px';
-            htmlEl.style.paddingTop = htmlEl.dataset.oldPaddingTop || '';
-            htmlEl.style.paddingBottom = htmlEl.dataset.oldPaddingBottom || '';
-        } else {
-            htmlEl.style.maxHeight = '0';
-            htmlEl.style.paddingTop = htmlEl.dataset.oldPaddingTop || '';
-            htmlEl.style.paddingBottom = htmlEl.dataset.oldPaddingBottom || '';
-        }
-        htmlEl.style.overflow = 'hidden';
-    },
-    onAfterEnter(el: Element) {
-        const htmlEl = el as HTMLElement;
-        htmlEl.style.maxHeight = '';
-        htmlEl.style.overflow = htmlEl.dataset.oldOverflow || '';
-    },
-    onBeforeLeave(el: Element) {
-        const htmlEl = el as HTMLElement;
-        htmlEl.dataset.oldPaddingTop = htmlEl.style.paddingTop;
-        htmlEl.dataset.oldPaddingBottom = htmlEl.style.paddingBottom;
-        htmlEl.dataset.oldOverflow = htmlEl.style.overflow;
-        htmlEl.style.maxHeight = htmlEl.scrollHeight + 'px';
-        htmlEl.style.overflow = 'hidden';
-    },
-    onLeave(el: Element) {
-        const htmlEl = el as HTMLElement;
-        if (htmlEl.scrollHeight !== 0) {
-            htmlEl.style.maxHeight = '0';
-            htmlEl.style.paddingTop = '0';
-            htmlEl.style.paddingBottom = '0';
-        }
-    },
-    onAfterLeave(el: Element) {
-        const htmlEl = el as HTMLElement;
-        htmlEl.style.maxHeight = '';
-        htmlEl.style.overflow = htmlEl.dataset.oldOverflow || '';
-        htmlEl.style.paddingTop = htmlEl.dataset.oldPaddingTop || '';
-        htmlEl.style.paddingBottom = htmlEl.dataset.oldPaddingBottom || '';
-    },
-};
 
 const slotProps = computed(() => ({
     isThinking: props.generated,
@@ -138,12 +87,15 @@ const slotProps = computed(() => ({
     cursor: pointer;
     font-size: var(--vmc-font-size-sm);
     margin-bottom: var(--vmc-spacing-sm);
-     width: fit-content;
+    width: fit-content;
     border-radius: var(--vmc-border-radius);
     padding: var(--vmc-spacing-sm) var(--vmc-spacing-md);
     background-color: var(--vmc-think-header-bg);
     color: var(--vmc-think-text);
-    transition: background-color 0.2s ease;
+}
+.header-content {
+    display: flex;
+    align-items: center;
 }
 
 .think-header:hover .header-content {
@@ -156,11 +108,6 @@ const slotProps = computed(() => ({
 }
 
 .think-content {
-    transition:
-        max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     border-left: 3px solid var(--vmc-think-content-border);
     padding-left: var(--vmc-spacing-md);

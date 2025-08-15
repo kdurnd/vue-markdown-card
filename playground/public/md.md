@@ -9,6 +9,8 @@
 
 ## hhh222
 
+:joy:  :laughing: :blush: :dog:
+
 1232
 34234324
 
@@ -18,7 +20,6 @@ asdada $ cn^2 $
 
 ```cpp
 int a = 1;
-
 ```
-![alt text](image-1.png)
 
+![alt text](image-1.png)

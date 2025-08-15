@@ -25,37 +25,43 @@
                 :theme="switchTheme === 'dark' ? 'light' : 'dark'"
                 :components-map="componentsMap"
                 :enableMath="true"
+                :enable-emoji="true"
             >
-                <!-- 如有自定义插槽可在此添加 -->
-                <!-- <template #think-header="slotProps">
-                    <div style="border: 2px solid red; padding: 5px">
-                        <p>自定义Header - isThinking: {{ slotProps?.isThinking }}</p>
-                        <details style="margin-top: 10px">
-                            <summary>调试信息 (点击展开)</summary>
-                            <pre style="font-size: 12px; background: #f5f5f5; padding: 5px; margin: 5px 0">{{
-                                safeStringify(slotProps)
-                            }}</pre>
-                        </details>
-                        <span v-if="slotProps?.isThinking">🤔 Thinking...</span>
-                        <span v-else>💡 Thoughts Completed</span>
+                <!-- ShikiStreamCodeBlock 插槽示例 -->
+                <!-- Header 插槽：自定义代码块头部 -->
+                <template #code-header="{ slotProps }">
+                    <div class="custom-code-header">
+                        <div class="language-badge">{{ slotProps.language || 'text' }}</div>
+                        <div class="code-actions">
+                            <button @click="copyCode(slotProps.code)" class="copy-btn">📋 复制</button>
+                            <span class="lines-count">{{ slotProps.code?.split('\n').length || 0 }} 行</span>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Content 插槽：自定义代码内容渲染 -->
+                <!-- <template #code-content="{ highlightVnode, slotProps }">
+                    <div class="custom-code-content">
+                        <div class="code-meta">语言: {{ slotProps.language }}, 长度: {{ slotProps.code?.length || 0 }} 字符</div>
+                        <component :is="highlightVnode" />
                     </div>
                 </template> -->
-                <!-- <template #think-content="slotProps">
-                    <div style="background: #f0f0f0; padding: 10px; border-radius: 5px; border: 2px solid blue">
-                        <p>自定义思考内容区域</p>
-                        <div style="margin: 10px 0; padding: 8px; background: #e0e0e0; border-radius: 4px">
-                            <strong>原始内容:</strong>
-                            {{ slotProps?.rawContent }}
+
+                <!-- Block 插槽：最外层，完全自定义整个代码块 -->
+                <!-- <template #code-block="{ highlightVnode, slotProps }">
+                    <div class="custom-code-block-wrapper" :data-language="slotProps.language">
+                        <div class="custom-header">
+                            <div class="lang-info">
+                                <span class="language-tag">{{ slotProps.language || 'text' }}</span>
+                                <span class="char-count">{{ slotProps.code?.length || 0 }} 字符</span>
+                            </div>
+                            <button @click="copyCode(slotProps.code)" class="custom-copy-btn">📋</button>
                         </div>
-                        <details style="margin: 10px 0">
-                            <summary>原始节点数据</summary>
-                            <pre style="font-size: 11px; background: #fff; padding: 5px; overflow: auto">{{
-                                JSON.stringify(slotProps?.originalNode, null, 2)
-                            }}</pre>
-                        </details>
-                        <div style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px">
-                            <strong>渲染内容:</strong>
-                            <component :is="slotProps?.thinkContentVNode" />
+                        <div class="custom-code-wrapper">
+                            <component :is="highlightVnode" />
+                        </div>
+                        <div class="custom-footer">
+                            <span>{{ slotProps.code?.split('\n').length || 0 }} 行代码</span>
                         </div>
                     </div>
                 </template> -->
@@ -71,8 +77,6 @@ import './animation.css';
 import Button from './Button.vue';
 import java from '@shikijs/langs/java';
 import 'katex/dist/katex.min.css';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
 import BarChart from './BarChart.vue';
 import Placeholder from './Placeholder.vue';
 import CodeBlockRendererComp from './CodeBlockRenderer.vue';
@@ -160,4 +164,160 @@ const componentsMap = {
     Placeholder,
 };
 const extraLangs = [java];
+
+// 代码复制功能
+function copyCode(code) {
+    if (!code) return;
+    navigator.clipboard
+        .writeText(code)
+        .then(() => {
+            console.log('代码已复制到剪贴板');
+            // 这里可以添加一个提示消息
+        })
+        .catch(err => {
+            console.error('复制失败:', err);
+            // 降级方案：使用传统的复制方法
+            const textArea = document.createElement('textarea');
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        });
+}
 </script>
+
+<style scoped>
+/* 自定义代码块样式 */
+.custom-code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 14px;
+    border-radius: 6px 6px 0 0;
+}
+
+.language-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.code-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.copy-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.lines-count {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Block 插槽自定义样式 */
+.custom-code-block-wrapper {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: white;
+    margin: 16px 0;
+}
+
+.custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+}
+
+.lang-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.language-tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.char-count {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.custom-copy-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.custom-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.custom-code-wrapper {
+    background: #f8fafc;
+    overflow-x: auto;
+}
+
+.custom-footer {
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 12px;
+    text-align: right;
+}
+
+/* 深色主题适配 */
+:global(.dark) .custom-code-block-wrapper {
+    background: #1e293b;
+    border-color: #374151;
+}
+
+:global(.dark) .custom-code-wrapper {
+    background: #0f172a;
+}
+
+:global(.dark) .custom-footer {
+    background: #1e293b;
+    border-color: #374151;
+    color: #94a3b8;
+}
+</style>
