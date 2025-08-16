@@ -9,21 +9,23 @@
                         {{ slotProps.language }}
                     </div>
                     <div class="code-actions">
-                        <div v-if="isMermaid && isRendered" class="vmc-mermaid-btn">
+                        <div v-if="isMermaid && isRendered" class="vmc-mermaid-actions">
                             <button :class="{ active: showImg }" @click="showImg = true">图形</button>
                             <button :class="{ active: !showImg }" @click="showImg = false">代码</button>
                         </div>
                         <slot name="actions" :slotProps="slotProps">
-                            <button v-if="!isCopySuccess" @click="copyCode" class="actions-btn">
-                                <RiFileCopyLine size="16" :color="proxyProps.theme === 'dark' ? '#fff' : '#000'" />
-                            </button>
-                            <RiCheckLine v-else size="16" color="#1afa29" />
-                            <button @click="toggleCollapse" class="actions-btn">
-                                <RiCollapseVerticalFill
-                                    size="16"
-                                    :color="proxyProps.theme === 'dark' ? '#fff' : '#000'"
-                                />
-                            </button>
+                            <div class="custom-actions">
+                                <button v-if="!isCopySuccess" @click="copyCode" class="actions-btn">
+                                    <RiFileCopyLine size="16" :color="proxyProps.theme === 'dark' ? '#fff' : '#000'" />
+                                </button>
+                                <RiCheckLine v-else size="16" color="#1afa29" />
+                                <button @click="toggleCollapse" class="actions-btn">
+                                    <RiCollapseVerticalFill
+                                        size="16"
+                                        :color="proxyProps.theme === 'dark' ? '#fff' : '#000'"
+                                    />
+                                </button>
+                            </div>
                         </slot>
                     </div>
                 </div>
@@ -256,29 +258,40 @@ watch([() => props.generated, () => proxyProps.theme], ([generated, theme], [old
     justify-content: space-between;
     align-items: center;
 
-    .vmc-mermaid-btn {
+    .code-actions {
         display: flex;
-        align-items: center;
-        gap: 0; /* 挨在一起 */
-        border-radius: 8px;
-        overflow: hidden;
-    }
+        gap: var(--vmc-spacing-md);
+        .vmc-mermaid-actions {
+            display: flex;
+            align-items: center;
+            gap: 0; /* 挨在一起 */
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-    .vmc-mermaid-btn button {
-        padding: var(--vmc-spacing-xs) var(--vmc-spacing-md);
-        font-size: 14px;
-        border: none;
-        outline: none;
-        background-color: var(--vmc);
-        color: #333;
-        cursor: pointer;
-    }
+        .vmc-mermaid-actions button {
+            padding: var(--vmc-spacing-xs) var(--vmc-spacing-md);
+            font-size: 14px;
+            border: none;
+            outline: none;
+            background-color: var(--vmc);
+            color: #333;
+            cursor: pointer;
+        }
 
-    .vmc-mermaid-btn button.active {
-        background-color: var(--vmc-background);
-    }
-    .actions-btn {
-        cursor: pointer;
+        .vmc-mermaid-actions button.active {
+            background-color: var(--vmc-background);
+        }
+
+        .custom-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--vmc-spacing-xs);
+
+            .actions-btn {
+                cursor: pointer;
+            }
+        }
     }
 }
 </style>

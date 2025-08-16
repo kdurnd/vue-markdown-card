@@ -27,44 +27,6 @@
                 :enableMath="true"
                 :enable-emoji="true"
             >
-                <!-- ShikiStreamCodeBlock 插槽示例 -->
-                <!-- Header 插槽：自定义代码块头部 -->
-                <!-- <template #code-header="{ slotProps }">
-                    <div class="custom-code-header">
-                        <div class="language-badge">{{ slotProps.language || 'text' }}</div>
-                        <div class="code-actions">
-                            <button @click="copyCode(slotProps.code)" class="copy-btn">📋 复制</button>
-                            <span class="lines-count">{{ slotProps.code?.split('\n').length || 0 }} 行</span>
-                        </div>
-                    </div>
-                </template> -->
-
-                <!-- Content 插槽：自定义代码内容渲染 -->
-                <!-- <template #code-content="{ highlightVnode, slotProps }">
-                    <div class="custom-code-content">
-                        <div class="code-meta">语言: {{ slotProps.language }}, 长度: {{ slotProps.code?.length || 0 }} 字符</div>
-                        <component :is="highlightVnode" />
-                    </div>
-                </template> -->
-
-                <!-- Block 插槽：最外层，完全自定义整个代码块 -->
-                <!-- <template #code-block="{ highlightVnode, slotProps }">
-                    <div class="custom-code-block-wrapper" :data-language="slotProps.language">
-                        <div class="custom-header">
-                            <div class="lang-info">
-                                <span class="language-tag">{{ slotProps.language || 'text' }}</span>
-                                <span class="char-count">{{ slotProps.code?.length || 0 }} 字符</span>
-                            </div>
-                            <button @click="copyCode(slotProps.code)" class="custom-copy-btn">📋</button>
-                        </div>
-                        <div class="custom-code-wrapper">
-                            <component :is="highlightVnode" />
-                        </div>
-                        <div class="custom-footer">
-                            <span>{{ slotProps.code?.split('\n').length || 0 }} 行代码</span>
-                        </div>
-                    </div>
-                </template> -->
             </VueMarkdownCard>
         </div>
     </div>
@@ -151,11 +113,6 @@ onMounted(clickHandle);
 const switchTheme = ref('dark');
 
 function changeTheme() {
-    if (switchTheme.value === 'dark') {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
     switchTheme.value = switchTheme.value === 'dark' ? 'light' : 'dark';
 }
 

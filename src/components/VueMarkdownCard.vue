@@ -1,5 +1,5 @@
 <template>
-    <article ref="vueMarkdownCard" class="vue-markdown-card">
+    <article ref="vueMarkdownCard" class="vue-markdown-card" :class="{ 'dark': theme === 'dark' }">
         <VueMarkdownRenderer
             :source="source"
             :theme="theme"
@@ -47,18 +47,17 @@ const props = withDefaults(
     defineProps<{
         source: string;
         theme: 'dark' | 'light' | 'auto';
-        useSelection: boolean;
         remarkPlugins?: PluggableList;
         rehypePlugins?: PluggableList;
         extraLangs?: Langs[];
+        enabledSelection?: boolean;
         enableMath?: boolean;
-        enableMermaid?: boolean;
         enableEmoji?: boolean;
         enableImagePreview?: boolean;
     }>(),
     {
         theme: 'light',
-        useSelection: false,
+        enabledSelection: false,
         enableImagePreview: true,
     },
 );
@@ -104,10 +103,6 @@ async function loadPlugins() {
     if (props.enableEmoji) {
         const { default: remarkEmoji } = await import('remark-emoji');
         remarkList.push([remarkEmoji, { emoticon: true }]);
-    }
-    if (props.enableMermaid) {
-        const { default: rehypeMermaidjs } = await import('rehype-mermaidjs');
-        rehypeList.push(rehypeMermaidjs);
     }
 
     remarkPlugins.value = remarkList;
