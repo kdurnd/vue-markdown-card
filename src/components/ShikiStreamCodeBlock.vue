@@ -10,23 +10,37 @@
                     </div>
                     <div class="code-actions">
                         <slot name="actions" :slotProps="slotProps">
-                            <button v-if="!isCopySuccess" @click="copyCode" class="actions-btn" ><RiFileCopyLine size="16" :color="proxyProps.theme === 'dark' ? '#fff' : '#000'" /></button>
-                            <RiCheckLine v-else size="16" color="#1afa29"/>
-                            <button @click="toggleCollapse" class="actions-btn" ><RiCollapseVerticalFill size="16" :color="proxyProps.theme === 'dark' ? '#fff' : '#000'" /></button>
+                            <button v-if="!isCopySuccess" @click="copyCode" class="actions-btn">
+                                <RiFileCopyLine size="16" :color="proxyProps.theme === 'dark' ? '#fff' : '#000'" />
+                            </button>
+                            <RiCheckLine v-else size="16" color="#1afa29" />
+                            <button @click="toggleCollapse" class="actions-btn">
+                                <RiCollapseVerticalFill
+                                    size="16"
+                                    :color="proxyProps.theme === 'dark' ? '#fff' : '#000'"
+                                />
+                            </button>
                         </slot>
                     </div>
                 </div>
             </slot>
             <!-- Content 插槽，用于自定义代码内容渲染 -->
-             <div class="code-content-wrapper">
+            <div class="code-content-wrapper">
                 <CollapseTransition>
-                   <div class="code-content" v-show="showContent">
-                       <slot name="code-content" :highlightVnode="highlightVnode" :slotProps="slotProps">
-                           <component :is="highlightVnode" />
-                       </slot>
-                   </div>
+                    <div class="code-content" v-show="showContent">
+                        <slot name="code-content" :slotProps="slotProps">
+                            <ShikiCachedRenderer
+                                v-if="highlighter && codeMeta.code"
+                                :highlighter="highlighter"
+                                :code="codeMeta.code"
+                                :lang="codeMeta.highlightLang"
+                                theme="css-variables"
+                                :style="{ ...themeStyle, background: 'var(--vercel-code-block-background)' }"
+                            />
+                        </slot>
+                    </div>
                 </CollapseTransition>
-             </div>
+            </div>
         </div>
     </slot>
 </template>
@@ -39,7 +53,7 @@ import { THEME } from '../core/highlight/codeTheme';
 import { ElementNode } from '../core/segmentText';
 import { useProxyProps } from '../core/useProxyProps';
 import CollapseTransition from './CollapseTransition.vue';
-import { RiFileCopyLine , RiCheckLine ,RiCollapseVerticalFill } from '@remixicon/vue';
+import { RiFileCopyLine, RiCheckLine, RiCollapseVerticalFill } from '@remixicon/vue';
 const FALLBACK_LANG = 'ts';
 
 interface Props {
@@ -47,7 +61,6 @@ interface Props {
 }
 
 interface SlotProps {
-    highlightVnode: VNode;
     language: string;
     code: string;
 }
@@ -62,7 +75,7 @@ const themeStyle = computed(() => {
     return THEME[theme];
 });
 
-function getCodeMeta() {
+const codeMeta = computed(() => {
     const node = JSON.parse(props.nodeJSON) as ElementNode;
     const loadedLangs = highlighter!.value!.getLoadedLanguages();
     let language = '';
@@ -86,23 +99,10 @@ function getCodeMeta() {
             const lines = codeText.split('\n');
             const lastLine = lines.at(-1);
 
-            let matchedMarkdownCount = 0;
-            if (language === 'markdown') {
-                lines.forEach(line => {
-                    const trimStartLine = line.trimStart();
-                    if (trimStartLine.startsWith('```')) {
-                        matchedMarkdownCount++;
-                    }
-                });
-                if (lastLine && lastLine.trimStart().startsWith('```') && matchedMarkdownCount % 2 === 0) {
-                    code = codeText;
-                }
+            if (lastLine && lastLine.trimStart().startsWith('`')) {
+                code = lines.slice(0, lines.length - 1).join('\n');
             } else {
-                if (lastLine && lastLine.trimStart().startsWith('`')) {
-                    code = lines.slice(0, lines.length - 1).join('\n');
-                } else {
-                    code = codeText;
-                }
+                code = codeText;
             }
         }
     }
@@ -115,49 +115,34 @@ function getCodeMeta() {
         language,
         code,
     };
-}
-
-const slotProps = ref<SlotProps>({});
+});
 
 const showContent = ref(true);
 const toggleCollapse = () => {
     showContent.value = !showContent.value;
 };
 
-const highlightVnode = computed(() => {
-    const { highlightLang, language, code: codeChunk } = getCodeMeta();
-    if (!highlighter!.value || codeChunk === '') return null;
-    const node =  h(ShikiCachedRenderer, {
-        highlighter: highlighter!.value,
-        code: codeChunk,
-        lang: highlightLang,
-        theme: 'css-variables',
-        style: {
-            ...themeStyle.value,
-            background: 'var(--vercel-code-block-background)',
-        },
-    });
-    slotProps.value = {
-        highlightVnode: node,
-        language: language,
-        code: codeChunk,
-    };
-    return node;
-});
+const slotProps = computed(() => ({
+    code: codeMeta.value.code,
+    language: codeMeta.value.language,
+}));
 
 const isCopySuccess = ref(false);
 const copyCode = () => {
     const { code } = slotProps.value;
     if (code) {
-        navigator.clipboard.writeText(code).then(() => {
-            console.log('Code copied to clipboard');
-            isCopySuccess.value = true;
-            setTimeout(() => {
-                isCopySuccess.value = false;
-            }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy code: ', err);
-        });
+        navigator.clipboard
+            .writeText(code)
+            .then(() => {
+                console.log('Code copied to clipboard');
+                isCopySuccess.value = true;
+                setTimeout(() => {
+                    isCopySuccess.value = false;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy code: ', err);
+            });
     }
 };
 </script>
