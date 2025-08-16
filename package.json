@@ -1,65 +1,78 @@
 {
-  "name": "vue-mdr",
-  "version": "0.0.8",
-  "description": "Tranform markdown string to vue component with `mdast-> hast-> vue node`",
-  "module": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "dev": "pnpm -F playground run dev",
-    "build": "tsc",
-    "build:playground": "pnpm -F playground run build",
-    "preview:playground": "pnpm -F playground run preview",
-    "prettier-lint": "prettier --write ."
-  },
-  "keywords": [
-    "vue",
-    "markdown",
-    "stream",
-    "stream-markdown",
-    "markdown to html",
-    "markdown to vue"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/linzhe141/vue-markdown-renderer"
-  },
-  "author": "linzhe141@qq.com",
-  "license": "ISC",
-  "packageManager": "pnpm@10.5.1",
-  "devDependencies": {
-    "prettier": "^3.5.2",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript": "^5.8.3",
-    "vite": "^6.2.0",
-    "vitest": "^3.0.7"
-  },
-  "peerDependencies": {
-    "vue": "^3.2.0"
-  },
-  "dependencies": {
-    "@floating-ui/vue": "^1.1.8",
-    "@remixicon/vue": "^4.6.0",
-    "@shikijs/core": "^3.6.0",
-    "@shikijs/langs": "^3.6.0",
-    "@shikijs/themes": "^3.6.0",
-    "hast-util-to-jsx-runtime": "^2.3.6",
-    "lodash-es": "^4.17.21",
-    "mermaid": "^11.9.0",
-    "rehype-katex": "^7.0.1",
-    "rehype-raw": "^7.0.0",
-    "remark-emoji": "^5.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-math": "^6.0.0",
-    "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.2",
-    "shiki": "^3.6.0",
-    "shiki-stream": "^0.1.2",
-    "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0",
-    "vfile": "^6.0.3",
-    "viewerjs": "^1.11.7"
-  }
+    "name": "vue-mdr-card",
+    "version": "0.0.5",
+    "description": "render LLM markdown to html",
+    "main": "./dist/vue-mdr-card.cjs.js",
+    "module": "./dist/vue-mdr-card.es.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/vue-mdr-card.es.js",
+            "require": "./dist/vue-mdr-card.cjs.js"
+        },
+        "./style.css": "./dist/vue-mdr-card.css"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "pnpm -F playground run dev",
+        "build": "vite build && vue-tsc --emitDeclarationOnly",
+        "build:playground": "pnpm -F playground run build",
+        "preview:playground": "pnpm -F playground run preview",
+        "prettier-lint": "prettier --write .",
+        "prepublishOnly": "npm run build",
+        "publish:npm": "npm publish --registry https://registry.npmjs.org/",
+        "publish:dry": "npm publish --dry-run --registry https://registry.npmjs.org/"
+    },
+    "keywords": [
+        "vue",
+        "markdown",
+        "stream",
+        "stream-markdown",
+        "markdown to html",
+        "markdown to vue"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kdurnd/vue-markdown-card.git"
+    },
+    "author": "2806881473@qq.com",
+    "packageManager": "pnpm@10.5.1",
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.2.1",
+        "prettier": "^3.5.2",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "typescript": "^5.8.3",
+        "vite": "^6.2.0",
+        "vitest": "^3.0.7",
+        "vue-tsc": "^3.0.5"
+    },
+    "peerDependencies": {
+        "vue": "^3.2.0"
+    },
+    "dependencies": {
+        "@floating-ui/vue": "^1.1.8",
+        "@remixicon/vue": "^4.6.0",
+        "@shikijs/core": "^3.6.0",
+        "@shikijs/langs": "^3.6.0",
+        "@shikijs/themes": "^3.6.0",
+        "hast-util-to-jsx-runtime": "^2.3.6",
+        "lodash-es": "^4.17.21",
+        "mermaid": "^11.9.0",
+        "rehype-katex": "^7.0.1",
+        "rehype-raw": "^7.0.0",
+        "remark-emoji": "^5.0.1",
+        "remark-gfm": "^4.0.1",
+        "remark-math": "^6.0.0",
+        "remark-parse": "^11.0.0",
+        "remark-rehype": "^11.1.2",
+        "shiki": "^3.6.0",
+        "shiki-stream": "^0.1.2",
+        "unified": "^11.0.5",
+        "unist-util-visit": "^5.0.0",
+        "vfile": "^6.0.3",
+        "viewerjs": "^1.11.7"
+    }
 }

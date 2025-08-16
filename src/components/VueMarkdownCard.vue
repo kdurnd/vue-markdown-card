@@ -315,6 +315,7 @@ onBeforeUnmount(() => {
     font-weight: var(--vmc-font-weight-normal);
     font-size: var(--vmc-font-size-sm);
     line-height: var(--vmc-line-height-relaxed);
+    margin-top: 0;
     margin-bottom: var(--vmc-spacing-md);
     border-radius: var(--vmc-border-radius);
     padding: var(--vmc-spacing-sm) var(--vmc-spacing-md);

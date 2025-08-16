@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "declaration": true,
+        "declarationDir": "dist",
         "outDir": "dist",
         "target": "ESNext",
         "module": "esnext",
@@ -15,7 +16,7 @@
         "removeComments": false,
         "noImplicitAny": false,
         "skipLibCheck": true,
-        "rootDir": ".",
+        "rootDir": "src",
         "forceConsistentCasingInFileNames": true
     },
     "include": ["src", "shims-vue.d.ts"]

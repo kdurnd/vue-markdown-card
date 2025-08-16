@@ -54,7 +54,7 @@ import { ElementNode } from '../core/segmentText';
 import { useProxyProps } from '../core/useProxyProps';
 import CollapseTransition from './CollapseTransition.vue';
 import { RiFileCopyLine, RiCheckLine, RiCollapseVerticalFill } from '@remixicon/vue';
-import { MermaidConfig } from '../core/MerMaidService';
+import { MermaidConfig } from '../core/MermaidService';
 const FALLBACK_LANG = 'ts';
 
 interface Props {
@@ -290,6 +290,12 @@ watch([() => props.generated, () => proxyProps.theme], ([generated, theme], [old
 
             .actions-btn {
                 cursor: pointer;
+                border: none;
+                background: none;
+                outline: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
     }
