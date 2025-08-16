@@ -117,13 +117,13 @@ export default defineComponent({
                     delete props.node;
                     return h(
                         type,
-                        { 
-                            ...props, 
+                        {
+                            ...props,
                             nodeJSON,
                             onMermaidRendered: (count: number) => {
                                 currentImageCount.value += count;
                                 emit('images-count-updated', currentImageCount.value);
-                            }
+                            },
                         },
                         {
                             'code-header': (slotProps: any) => slots['code-header']?.(slotProps),
@@ -201,25 +201,18 @@ export default defineComponent({
         });
 
         return () => {
-            return h(
-                ShikiProvider,
-                null,
-                h(
-                    SelectPopoverProvider,
-                    {
-                        blacklist: ['.think-block'],
-                    },
-                    {
-                        default: h(
-                            'div',
-                            {
-                                class: 'vue-markdown-renderer',
-                            },
-                            computedVNode.value,
-                        ),
-                    },
-                ),
-            );
+            return h(ShikiProvider, null, {
+                default: () =>
+                    h(
+                        SelectPopoverProvider,
+                        {
+                            blacklist: ['.think-block'],
+                        },
+                        {
+                            default: () => h('div', { class: 'vue-markdown-renderer' }, computedVNode.value),
+                        },
+                    ),
+            });
         };
     },
 });
